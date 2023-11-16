@@ -171,9 +171,15 @@ public class App {
 
                 case 6:
                     showMenuAdmin();
-                    handleViewOrder(conn, 0);
+                    handleViewOrder(conn, 1);
                     showMenuAdmin();
                     break;
+                case 7:
+                    showMenuAdmin();
+                    handleUpdateProduct(conn);
+                    showMenuAdmin();
+                    break;
+
                 default:
                     showMenuAdmin();
                     break;
@@ -232,6 +238,7 @@ public class App {
         System.out.println("4. Xem danh muc");
         System.out.println("5. Them danh muc");
         System.out.println("6. Xem danh sach dat hang");
+        System.out.println("7. Chinh sua san pham");
 
         System.out.println("0. Dang xuat");
     }
@@ -246,7 +253,7 @@ public class App {
         int soluong = sc.nextInt();
         sc.nextLine();
 
-        System.out.print("SDT cua ban: ");
+        System.out.print("SDT khach hang: ");
         String sdt = sc.nextLine();
 
         System.out.print("Dia chi nhan: ");
@@ -342,7 +349,7 @@ public class App {
         try {
             String sql;
             if (isNguoidung == 1) {
-                sql = "SELECT *, p.name sanphamName  FROM dathang,sanpham p WHERE idNguoidung = ? and p.idSanpham = dathang.idSanpham; ";
+                sql = "SELECT *, p.name tenSanpham  FROM dathang,sanpham p WHERE idNguoidung = ? and p.idSanpham = dathang.idSanpham; ";
                 pStmt = conn.prepareStatement(sql);
 
                 System.out.println(
@@ -360,15 +367,15 @@ public class App {
                     Date date = rs.getDate("date");
                     String sdt = rs.getString("sdt");
                     String diachi = rs.getString("diachi");
-                    String sanphamName = rs.getString("sanphamName");
+                    String tenSanpham = rs.getString("tenSanpham");
                     int soluong = rs.getInt("soluong");
 
-                    System.out.format("%-3s %-18s %-25d %-18s %-18s %-18s %-18d\n", id, sanphamName, soluong, sdt,
+                    System.out.format("%-3s %-18s %-25d %-18s %-18s %-18s %-18d\n", id, tenSanpham, soluong, sdt,
                             diachi,
                             date.toString(), total);
                 }
             } else {
-                sql = "SELECT *, nguoidung.Hoten userName, p.name sanphamName  FROM dathang,nguoidung, sanpham p \n" + //
+                sql = "SELECT *, nguoidung.Hoten userName, p.name tenSanpham  FROM dathang,nguoidung, sanpham p \n" + //
                         "WHERE nguoidung.idNguoidung = dathang.idNguoidung and p.idSanpham = dathang.idSanpham;";
                 pStmt = conn.prepareStatement(sql);
 
@@ -385,11 +392,11 @@ public class App {
                     Date date = rs.getDate("date");
                     String sdt = rs.getString("sdt");
                     String diachi = rs.getString("diachi");
-                    String sanphamName = rs.getString("sanphamName");
+                    String tenSanpham = rs.getString("tenSanpham");
                     int userName = rs.getInt("userName");
                     int soluong = rs.getInt("soluong");
 
-                    System.out.format("%-3s %-18s %-25d %-18s %-18s %-18s %-18d %-18d\n", id, sanphamName, soluong,
+                    System.out.format("%-3s %-18s %-25d %-18s %-18s %-18s %-18d %-18d\n", id, tenSanpham, soluong,
                             sdt,
                             diachi,
                             date.toString(), userName, total);
@@ -493,6 +500,61 @@ public class App {
                 System.out.println("Tao san pham thanh cong !");
             } else {
                 System.out.println("Khong tim thay san pham hoac co loi khi tao san pham!");
+            }
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    public static void handleUpdateProduct(Connection conn) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("-------------------Nhap id san pham muon sua--------------------");
+        System.out.print("idSanpham: ");
+        String id = sc.nextLine();
+
+        // Hiển thị thông tin sản phẩm hiện tại để người dùng có thể chỉnh sửa
+        System.out.println("Thông tin sản phẩm hiện tại:");
+        handleViewProduct(conn);
+
+        System.out.println("-------------------Nhap thong tin moi cho san pham-------------------");
+        System.out.print("Ten san pham: ");
+        String name = sc.nextLine();
+
+        System.out.print("Mo ta: ");
+        String mota = sc.nextLine();
+
+        System.out.print("Gia: ");
+        String gia = sc.nextLine();
+
+        System.out.print("So luong: ");
+        Integer soluong = sc.nextInt();
+
+        System.out.println("Danh muc: ");
+        handleViewCategory(conn);
+        System.out.print("Lua chon danh muc moi: ");
+        int idLoai = sc.nextInt();
+
+        try {
+            CallableStatement cStmt = null;
+            cStmt = conn.prepareCall("{call suaSanpham(?, ?, ?, ?, ?, ?, ?)}");
+
+            cStmt.setString(1, id);
+            cStmt.setString(2, name);
+            cStmt.setString(3, mota);
+            cStmt.setString(4, gia);
+            cStmt.setInt(5, soluong);
+            cStmt.setInt(6, idLoai);
+            cStmt.registerOutParameter(7, Types.INTEGER);
+            cStmt.executeUpdate();
+
+            int result = cStmt.getInt(7);
+            if (result == 1) {
+                System.out.println("Cap nhat san pham thanh cong!");
+            } else if (result == 0) {
+                System.out.println("Khong tim thay san pham hoac danh muc!");
+            } else {
+                System.out.println("Loi khi cap nhat san pham!");
             }
 
         } catch (Exception e) {
