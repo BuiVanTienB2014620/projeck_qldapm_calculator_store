@@ -24,7 +24,7 @@ public class App {
 
         try {
             System.out.println();
-            System.out.println("----------------------Welcome shop calculator!----------------");
+            System.out.println("----------------------Welcome to shop SuperSports!----------------");
             int chosse = 0;
             do {
                 switch (chosse) {
@@ -73,7 +73,7 @@ public class App {
             if (balance != -1) {
                 if (balance == 1) {
                     System.out.println();
-                    System.out.println("Ban la quan tri vien shop calculator id = " + balance);
+                    System.out.println("Ban la quan tri vien shop SuperSports id = " + balance);
                     homeAdminPage(conn);
                 } else {
                     System.out.println();
@@ -295,7 +295,7 @@ public class App {
             rs = stmt.executeQuery("SELECT * FROM loai");
 
             System.out.println("-----------------------Danh sach danh muc:----------------");
-            System.out.println("Id" + "\t " + "Ten danh muc" + "\t " + "Mo ta");
+            System.out.println("Id" + "\t " + "Ten danh muc" + "\t " + "\t " + "Mo ta");
 
             while (rs.next()) {
                 String name = rs.getString("name"); // resultset trả về gồm 2 trường là
@@ -320,10 +320,10 @@ public class App {
                     "SELECT p.idSanpham, p.name, p.mota, p.gia, p.soluong, c.name nameLoai FROM sanpham p left join loai c on p.idLoai = c.idLoai");
 
             System.out.println(
-                    "---------------------------------------------- Danh sach san pham ------------------------------------------------");
+                    "---------------------------------------------- Danh sach san pham ------------------------------------------------------------------------------------");
             System.out.println(
-                    "------------------------------------------------------------------------------------------------------------------");
-            System.out.format("%-3s %-18s %-25s %-18s %-18s  %-18s\n", "Id", "Ten san pham", "Mo ta", "Gia",
+                    "------------------------------------------------------------------------------------------------------------------------------------------------------");
+            System.out.format("%-3s %-30s %-55s %-22s %-18s  %-18s\n", "Id", "Ten san pham", "Mo ta", "Gia",
                     "So luong", "Danh muc");
 
             while (rs.next()) {
@@ -333,11 +333,11 @@ public class App {
                 String nameLoai = rs.getString("nameLoai");
                 Integer soluong = rs.getInt("soluong");
                 String id = rs.getString("idSanpham");
-                System.out.format("%-3s %-18s %-25s %-18s %-18d  %-18s\n", id, name, mota, gia, soluong,
+                System.out.format("%-3s %-23s %-60s %-25s %-18d  %-18s\n", id, name, mota, gia, soluong,
                         nameLoai);
             }
             System.out.println(
-                    "------------------------------------------------------------------------------------------------------------------");
+                    "------------------------------------------------------------------------------------------------------------------------------------------------------");
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -357,9 +357,10 @@ public class App {
                 pStmt.setInt(1, userIdLogin);
                 rs = pStmt.executeQuery();
                 System.out.println(
-                        "------------------------------------------------------------------------------------------------------------------");
-                System.out.format("%-3s %-18s %-25s %-18s %-18s %-18s %-18s\n", "Id", "Ten san pham", "So luong",
-                        "SDT cua ban :", "Dia chi :",
+                        "----------------------------------------------------------------------------------------------------------------------------------");
+                System.out.format("%-3s %-18s %-18s %-18s %-18s %-18s %-18s %-18s\n", "Id", "Ten san pham", "So luong",
+                        "Don gia",
+                        "SDT cua ban", "Dia chi",
                         "Ngay dat", "Tong gia");
                 while (rs.next()) {
                     int id = rs.getInt("idDathang");
@@ -369,8 +370,10 @@ public class App {
                     String diachi = rs.getString("diachi");
                     String tenSanpham = rs.getString("tenSanpham");
                     int soluong = rs.getInt("soluong");
+                    int gia = rs.getInt("gia");
 
-                    System.out.format("%-3s %-18s %-25d %-18s %-18s %-18s %-18d\n", id, tenSanpham, soluong, sdt,
+                    System.out.format("%-3s %-18s %-18d %-18s %-18s %-18s %-18s %-18d\n", id, tenSanpham, soluong, gia,
+                            sdt,
                             diachi,
                             date.toString(), total);
                 }
@@ -381,7 +384,7 @@ public class App {
 
                 rs = pStmt.executeQuery();
                 System.out.println(
-                        "------------------------------------------------------------------------------------------------------------------");
+                        "----------------------------------------------------------------------------------------------------------------------------------");
                 System.out.format("%-3s %-18s %-25s %-18s %-18s %-18s %-18s %-18s\n", "Id", "Ten san pham", "So luong",
                         "SDT :", "Dia chi",
                         "Ngay dat:", "Khach hang :", "Tong tien :");
@@ -404,7 +407,7 @@ public class App {
             }
 
             System.out.println(
-                    "------------------------------------------------------------------------------------------------------------------");
+                    "----------------------------------------------------------------------------------------------------------------------------------");
         } catch (Exception e) {
             System.out.println(e);
         }
